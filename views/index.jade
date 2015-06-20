@@ -1,7 +1,21 @@
-doctype html
-html(lang='en')
-  head
-    title Battlehack App
-  body
-    h1 Jade - node template engine
-    h3=clientToken
+extends ./layout
+
+block content
+  form(
+    method="post"
+    action="/payment-methods"
+    )
+    #dropin
+    input(
+      type="submit"
+      value="Pay $10"
+    )
+
+  script(src="https://js.braintreegateway.com/v2/braintree.js")
+  script.
+    braintree.setup(
+    // Replace this with a client token from your server
+    "#{clientToken}",
+    "dropin", {
+      container: "dropin"
+    });
