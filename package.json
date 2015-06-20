@@ -4,7 +4,6 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "postinstall": "./install-hooks.sh",
     "start": "nodemon app",
     "test": "semistandard"
   },

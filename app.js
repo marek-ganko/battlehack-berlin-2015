@@ -1,9 +1,10 @@
 var express = require('express');
 var bb = require('express-busboy');
 var app = express();
-bb.extend(app,{
+
+bb.extend(app, {
   upload: true,
-  path: __dirname + "/file-uploads"
+  path: __dirname + '/file-uploads'
 });
 
 var bodyParser = require('body-parser');
@@ -31,8 +32,8 @@ app.post('/payment-methods', function (req, res) {
   });
 });
 
-//E-MAIL RETRIEVING - registering a charity
-app.post('/inbound-mail',function(req, res){
+// E-MAIL RETRIEVING - registering a charity
+app.post('/inbound-mail', function (req, res) {
   console.log('Mail retrieved');
   console.log(req);
 
