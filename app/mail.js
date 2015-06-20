@@ -31,19 +31,20 @@ function getCharityFromRequest (req) {
     var fileParsinDeferred = Q.defer();
     fileParsingPromise = fileParsinDeferred.promise;
 
-    var streamUpload = cloudinary.uploadStream();
-    fileStream.pipe(streamUpload.stream);
-
-    Q.all([streamUpload.promise, getCoordinatesFromStream(fileStream)])
-      .then(function (result) {
-        var imageData = result[0];
-        var coordinates = result[1];
+    getCoordinatesFromStream(fileStream)
+      .then(function (coordinates) {
         if (coordinates) {
           charity.coordinates = coordinates;
         }
+
+        var streamUpload = cloudinary.uploadStream();
+        fileStream.pipe(streamUpload.stream);
+        return streamUpload.promise;
+      })
+      .then(function(imageData){
         charity.image = imageData;
         fileParsinDeferred.resolve();
-      });
+      })
   });
   busboy.on('field', function (fieldname, val) {
     insertFieldToChartIfPossible(fieldname, val, charity);
