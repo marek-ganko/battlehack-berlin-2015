@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/marek-ganko/battlehack-berlin-2015#readme",
   "dependencies": {
-    "express": "^4.12.4"
+    "braintree": "^1.26.0",
+    "express": "^4.12.4",
+    "q": "^1.4.1"
   }
 }

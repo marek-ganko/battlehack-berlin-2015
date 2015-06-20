@@ -1,8 +1,13 @@
 var express = require('express');
 var app = express();
 
+var braintree = require('./braintree');
+
+
 app.get('/', function (req, res) {
-  res.send('Hello World!');
+  braintree.getClientToken().done(function(token) {
+    res.send('Hello World! Token ' + token);
+  });
 });
 
 var server = app.listen(process.env.PORT || 3000, function () {
