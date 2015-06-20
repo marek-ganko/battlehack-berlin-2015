@@ -26,7 +26,6 @@ app.use(allowCrossDomain);
 app.use(bodyParser.urlencoded({
   extended: true
 }));
-app.use(bodyParser.json());
 
 app.get('/', function (req, res) {
   braintree.getClientToken().done(function (token) {
