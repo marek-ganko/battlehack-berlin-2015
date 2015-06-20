@@ -2,8 +2,8 @@ var express = require('express');
 var bb = require('express-busboy');
 var app = express();
 bb.extend(app, {
-    upload: true,
-    path: __dirname + '/file-uploads'
+  upload: true,
+  path: __dirname + '/file-uploads'
 });
 
 // CORS middleware
@@ -38,7 +38,7 @@ app.use(bodyParser.urlencoded({
 app.get('/', function (req, res) {
   braintree.getClientToken().done(function (token) {
     res.render('index', {
-        clientToken: token
+      clientToken: token
     });
   });
 });
@@ -69,14 +69,30 @@ app.post('/inbound-mail', function (req, res) {
   console.log(req.body);
 
   var charity = {
-      name: req.body.subject,
-      description: req.body.text,
-      creator: req.body.from
+    name: req.body.subject,
+    description: req.body.text,
+    creator: req.body.from
   };
 
   charities.insert(charity);
 
   res.sendStatus(200);
+});
+
+app.get('/charities', function (req, res) {
+  charities.find({}, function (err, data) {
+    if (err) {
+      throw err;
+    }
+
+    data.forEach(function (item) {
+      item.coordinates = {
+        latitude: 52.51666666666667 + (Math.random() - 0.5),
+        longitue: 13.4 + (Math.random() - 0.5)
+      };
+    });
+    res.send(data);
+  });
 });
 
 var server = app.listen(process.env.PORT || 3000, function () {
