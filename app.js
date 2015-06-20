@@ -16,7 +16,7 @@ app.get('/', function (req, res) {
 app.post('/payment-methods', function(req, res){
   var nonce = req.body.payment_method_nonce;
 
-  braintree.createPayment(300, nonce).done(function(paymentResult) {
+  braintree.createPayment(30000, nonce).done(function(paymentResult) {
     console.log(paymentResult);
     res.send(paymentResult);
   });
