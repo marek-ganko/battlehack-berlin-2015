@@ -1,21 +1,113 @@
 var router = require('express').Router();
 var charities = require('./services/charities');
+var Busboy = require('busboy');
+var ExifImage = require('exif').ExifImage;
+var Q = require('q');
 
 // E-MAIL RETRIEVING - registering a charity
 router.post('/inbound-mail', function (req, res) {
   console.log('Mail retrieved');
-  console.log(req.body);
 
-  var charity = {
-    name: req.body.subject,
-    description: req.body.text,
-    creator: req.body.from
-  };
-
-  charities.insertCharity(charity).done(function () {
+  getCharityFromRequest(req).then(function (charity) {
+    return charities.insertCharity(charity);
+  }).then(function () {
     res.sendStatus(200);
+  }, function () {
+    res.sendStatus(500);
+  }).done();
+});
+
+function getCharityFromRequest (req) {
+  var charity = {};
+  var deferred = Q.defer();
+  var busboy = new Busboy({headers: req.headers});
+
+  var fileParsingPromise;
+
+  var fileCount = 0;
+  busboy.on('file', function (fieldname, fileStream, filename, encoding, mimetype) {
+    if (fileCount > 0) {  // support only the first file in the attachment
+      fileStream.resume();
+    }
+    fileCount = +1;
+    var fileParsinDeferred = Q.defer();
+    fileParsingPromise = fileParsinDeferred.promise;
+    getBufferFromFileStream(fileStream)
+      .then(getCoordinatesFromBuffer)
+      .then(function (coordinates) {
+        if (coordinates) {
+          charity.coordinates = coordinates;
+        }
+        fileParsinDeferred.resolve();
+      });
+  });
+  busboy.on('field', function (fieldname, val) {
+    insertFieldToChartIfPossible(fieldname, val, charity);
+  });
+  busboy.on('finish', function () {
+    if (!fileParsingPromise) {
+      fileParsingPromise = Q.when(null);
+    }
+
+    fileParsingPromise.then(function () {
+      deferred.resolve(charity);
+    });
   });
 
-});
+  req.pipe(busboy);
+
+  return deferred.promise;
+}
+
+function getBufferFromFileStream (fileStream) {
+  var deferred = Q.defer();
+
+  var dataParts = [];
+  fileStream.on('data', function (data) {
+    dataParts.push(data);
+  });
+  fileStream.on('end', function () {
+    deferred.resolve(Buffer.concat(dataParts));
+  });
+
+  return deferred.promise;
+}
+
+var fieldnameToCharityProperty = {
+  subject: 'name',
+  text: 'description',
+  from: 'creator'
+};
+
+function insertFieldToChartIfPossible (fieldname, val, charity) {
+  console.log('Field [' + fieldname + ']: value: ' + val);
+  var charityPropertyName = fieldnameToCharityProperty[fieldname];
+  if (charityPropertyName) {
+    charity[charityPropertyName] = val;
+  }
+}
+
+function convertGpsValue (gpsValue) {
+  return gpsValue[0] + (gpsValue[1] / 60) + (gpsValue[2] / 3600);
+}
+
+function getCoordinatesFromBuffer (buffer) {
+  var deferred = Q.defer();
+  ExifImage({image: buffer}, function (error, exifData) {
+    if (error) {
+      deferred.reject(coordinates);
+    }
+    var coordinates;
+    if (exifData.gps.GPSLatitude && exifData.gps.GPSLongitude) {
+      coordinates = {
+        latitude: convertGpsValue(exifData.gps.GPSLatitude),
+        longitude: convertGpsValue(exifData.gps.GPSLongitude)
+      };
+    }
+    deferred.resolve(coordinates);
+  });
+
+  return deferred.promise;
+}
 
 module.exports = router;

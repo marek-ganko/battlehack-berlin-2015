@@ -18,7 +18,7 @@ module.exports = {
   },
 
   insertCharity: function (charity) {
-    return Q.ninvoke(charities, 'insert', charity);
+    return Q.nbind(charities.insert, charities)(charity);
   },
 
   addPayment: function (charityId, paymentValue) {
