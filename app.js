@@ -42,8 +42,9 @@ app.get('/api/client-token', function (req, res) {
 
 app.post('/payment-methods', function (req, res) {
   var nonce = req.body.payment_method_nonce;
-
+  console.log('Creating payment: ' + nonce);
   braintree.createPayment(300, nonce).done(function (paymentResult) {
+    console.log(paymentResult);
     res.send(paymentResult);
   });
 });
