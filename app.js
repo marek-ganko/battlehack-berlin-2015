@@ -24,6 +24,12 @@ app.get('/', function (req, res) {
   });
 });
 
+app.get('/api/client-token', function (req, res) {
+  braintree.getClientToken().done(function (token) {
+    res.send(token);
+  });
+});
+
 app.post('/payment-methods', function (req, res) {
   var nonce = req.body.payment_method_nonce;
 
