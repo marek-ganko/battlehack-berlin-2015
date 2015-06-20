@@ -1,23 +1,27 @@
 var express = require('express');
 var app = express();
 
-var bodyParser = require('body-parser')
+var bodyParser = require('body-parser');
 var braintree = require('./braintree');
 
+app.set('views', __dirname + '/views');
+app.set('view engine', 'jade');
+
+app.use(bodyParser.urlencoded());
 app.use(bodyParser.json());
 
-
 app.get('/', function (req, res) {
-  braintree.getClientToken().done(function(token) {
-    res.send('Hello World! Token ' + token);
+  braintree.getClientToken().done(function (token) {
+    res.render('index', {
+        clientToken: token
+    });
   });
 });
 
-app.post('/payment-methods', function(req, res){
+app.post('/payment-methods', function (req, res) {
   var nonce = req.body.payment_method_nonce;
 
-  braintree.createPayment(30000, nonce).done(function(paymentResult) {
-    console.log(paymentResult);
+  braintree.createPayment(300, nonce).done(function (paymentResult) {
     res.send(paymentResult);
   });
 });
