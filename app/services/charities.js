@@ -9,7 +9,7 @@ module.exports = {
 
   getCharity: function (id) {
     return Q.ninvoke(charities, 'find', {
-      _id: id
+        _id: db.asId(id)
     });
   },
 
@@ -22,15 +22,17 @@ module.exports = {
   },
 
   addPayment: function (charityId, paymentValue) {
-    return Q.ninvoke(charities, 'update', {
-      _id: charityId
-    }, {
-      $inc: {
-        funds: paymentValue
-      }
+    return Q.ninvoke(charities, 'findAndModify', {
+        query: {
+          _id: db.asId(charityId)
+        },
+        update: {
+          $inc: {
+            funds: paymentValue
+          }
+        }
     }).then(function (charity) {
-
-      pusher.updateCharity(charity);
+      pusher.updateCharity(charity[0]);
       return charity;
 
     });

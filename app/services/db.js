@@ -6,5 +6,9 @@ var db = mongojs(
   ['charities']
 );
 
+db.asId = function (id) {
+  return mongojs.ObjectId(id);
+};
+
 module.exports = db;
 
