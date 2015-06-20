@@ -1,12 +1,24 @@
 var express = require('express');
 var app = express();
 
+var bodyParser = require('body-parser')
 var braintree = require('./braintree');
+
+app.use(bodyParser.json());
 
 
 app.get('/', function (req, res) {
   braintree.getClientToken().done(function(token) {
     res.send('Hello World! Token ' + token);
+  });
+});
+
+app.post('/payment-methods', function(req, res){
+  var nonce = req.body.payment_method_nonce;
+
+  braintree.createPayment(300, nonce).done(function(paymentResult) {
+    console.log(paymentResult);
+    res.send(paymentResult);
   });
 });
 

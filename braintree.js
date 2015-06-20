@@ -10,12 +10,21 @@ var gateway = braintree.connect({
 });
 
 
+
+
 module.exports = {
 
   getClientToken: function() {
     return Q.ninvoke(gateway.clientToken, 'generate', {}).then(function(response) {
       return response.clientToken;
     });
+  },
+
+  createPayment: function(amount, nonce) {
+    return Q.ninvoke(gateway.transaction, 'sale', {
+        amount: amount,
+        paymentMethodNonce: nonce,
+    });
   }
 
-};
+  };
