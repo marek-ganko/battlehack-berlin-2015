@@ -3,9 +3,18 @@ var bb = require('express-busboy');
 var app = express();
 
 bb.extend(app, {
-  upload: true,
-  path: __dirname + '/file-uploads'
+    upload: true,
+    path: __dirname + '/file-uploads'
 });
+
+// CORS middleware
+var allowCrossDomain = function (req, res, next) {
+  res.header('Access-Control-Allow-Origin', 'example.com');
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+
+  next();
+};
 
 var bodyParser = require('body-parser');
 var braintree = require('./braintree');
@@ -13,6 +22,7 @@ var braintree = require('./braintree');
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 
+app.use(allowCrossDomain);
 app.use(bodyParser.urlencoded());
 app.use(bodyParser.json());
 
