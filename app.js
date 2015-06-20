@@ -1,7 +1,6 @@
 var express = require('express');
 var bb = require('express-busboy');
 var app = express();
-
 bb.extend(app, {
     upload: true,
     path: __dirname + '/file-uploads'
@@ -18,6 +17,15 @@ var allowCrossDomain = function (req, res, next) {
 
 var bodyParser = require('body-parser');
 var braintree = require('./braintree');
+
+/**
+ * DB
+ */
+var mongojs = require('mongojs');
+var charitiesCollectionName = 'charities';
+var mongoDbAddress = process.env.MONGOLAB_URI || 'payitforward';
+var db = mongojs(mongoDbAddress, [charitiesCollectionName]);
+var charities = db.collection(charitiesCollectionName);
 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
@@ -58,9 +66,17 @@ app.post('/payment-methods', function (req, res) {
 // E-MAIL RETRIEVING - registering a charity
 app.post('/inbound-mail', function (req, res) {
   console.log('Mail retrieved');
-  console.log(req);
+  console.log(req.body);
 
-  res.send(200);
+  var charity = {
+      name: req.body.subject,
+      description: req.body.text,
+      creator: req.body.from
+  };
+
+  charities.insert(charity);
+
+  res.sendStatus(200);
 });
 
 var server = app.listen(process.env.PORT || 3000, function () {

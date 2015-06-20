@@ -23,6 +23,7 @@
     "express": "^4.12.4",
     "express-busboy": "^2.4.3",
     "jade": "^1.11.0",
+    "mongojs": "^1.0.1",
     "q": "^1.4.1"
   },
   "devDependencies": {
