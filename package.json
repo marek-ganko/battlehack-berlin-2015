@@ -23,6 +23,7 @@
     "express": "^4.12.4",
     "jade": "^1.11.0",
     "mongojs": "^1.0.1",
+    "pusher": "^1.0.5",
     "q": "^1.4.1"
   },
   "devDependencies": {

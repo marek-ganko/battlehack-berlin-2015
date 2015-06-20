@@ -17,9 +17,28 @@ router.get('/', function (req, res) {
 
 router.post('/:id/payment', function (req, res) {
   var nonce = req.body.payment_method_nonce;
-  braintree.createPayment(1, nonce).done(function (paymentResult) {
+  var id = req.params.id;
+  var paymentValue = 1;
+
+  charities.getCharity(id).then(function (charity) {
+
+    if (!charity) {
+      res.sendStatus(404);
+      return;
+    }
+
+    return braintree.createPayment(paymentValue, nonce);
+
+  }).then(function (paymentResult) {
+
+    return charities.addPayment(id, paymentValue);
+
+  }).done(function (charity) {
+
     res.sendStatus(200);
+
   });
+
 });
 
 module.exports = router;
