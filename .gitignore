@@ -1,5 +1,4 @@
 .idea/
-app/
 *.swp
 node_modules
 bower_components
