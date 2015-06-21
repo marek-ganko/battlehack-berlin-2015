@@ -1,7 +1,7 @@
 var router = require('express').Router();
 
 var users = require('./services/users');
-var charities = require('./services/charities');
+var charities2 = require('./services/charities');
 
 router.get('/', function (req, res) {
   users.getUsers().done(function (data) {
@@ -25,7 +25,7 @@ router.put('/:email', function (req, res) {
       return d < 10;
     }).map(function (charity) {
       console.log(charity, email);
-      charities.updatePoints(charity._id, 5);
+      charities2.updatePoints(charity._id, 5);
       users.updateCharityPoints(email, charity._id, 5);
     });
 
