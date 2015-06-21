@@ -21,9 +21,9 @@ router.put('/:email', function (req, res) {
   charities.getCharities().then(function (charities) {
     charities.filter(function (charity) {
       var d = distance(charity.coordinates, newCoords);
-      console.log('Distance', d);
-      return d < 100;
+      return d < 10;
     }).map(function (charity) {
+      console.log(charity, email);
       charities.updatePoints(charity._id, 5);
       users.updateCharityPoints(email, charity._id, 5);
     });
