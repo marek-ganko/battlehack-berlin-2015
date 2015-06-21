@@ -15,6 +15,12 @@ router.put('/:email', function (req, res) {
 
   // Update all charities that are close to him
   var distance = function(c1, c2) {
+    if (!c2) {
+      return 100;
+    }
+    if (!c1) {
+      return 100;
+    }
     return getDistanceFromLatLonInM(c1.latitude, c1.longitude, c2.latitude, c2.longitude);
   };
 
