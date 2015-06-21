@@ -18,7 +18,15 @@ module.exports = {
   },
 
   insertCharity: function (charity) {
-    return Q.ninvoke(charities, 'insert', charity);
+    var self = this;
+    return Q.ninvoke(charities, 'insert', charity).then(function (data) {
+
+      self.getCharities().then(function (charities) {
+        pusher.updateAllCharities(charities);
+      });
+
+      return data;
+    });
   },
 
   addPayment: function (charityId, paymentValue) {
@@ -33,8 +41,7 @@ module.exports = {
         }
     }).then(function (charity) {
       pusher.updateCharity(charity[0]);
-      return charity;
-
+      return charity[0];
     });
   }
 
