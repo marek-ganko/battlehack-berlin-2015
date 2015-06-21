@@ -34,7 +34,7 @@ router.post('/:id/payment', function (req, res) {
   }).then(function (paymentResult) {
 
     if (userEmail) {
-      users.updateCharityPoints(id, 1000);
+      users.updateCharityPoints(userEmail, id, 1000);
     }
 
     return charities.addPayment(id, paymentValue);

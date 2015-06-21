@@ -21,17 +21,10 @@ var pusher = require('./pusher');
 var Users = {
 
   getUserByMail: function (email) {
-    return Q.ninvoke(users, 'update', {
+    return Q.ninvoke(users, 'find', {
         email: email
-      },{
-        $set: {
-          email: email,
-          charities: {}
-        }
-      },{
-        upsert: true
-    }).then(function (data) {
-      return data[0];
+      }).then(function (data) {
+        return data[0];
     });
   },
 
@@ -58,12 +51,19 @@ var Users = {
   },
 
   updateCharityPoints: function (email, charityId, points) {
+    return this.getUserByMail(email).done(function (user) {
+     
+      console.log(user); 
+      var c = user.charities || {};
+      c = c[charityId] || {
+        points: 0,
+        lvl: 1
+      };
 
-    return this.getUserByMail(email).then(function (user) {
       var update = {};
       update['charities.' + charityId] = {
-        points: points,
-        lvl: 1
+        points: c.points + points,
+        lvl: c.lvl
       };
 
       console.log(update);
