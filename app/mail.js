@@ -48,7 +48,7 @@ function getCharityFromRequest(req) {
         charity.coordinates = coordinates;
       }
       if (blob) {
-        charity.imageBlob = blob;
+        charity.image = blob;
       }
 
       fileParsinDeferred.resolve();
