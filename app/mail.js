@@ -3,8 +3,8 @@ var charities = require('./services/charities');
 var Busboy = require('busboy');
 var ExifImage = require('exif').ExifImage;
 var Q = require('q');
-var blobUtil = require('blob-util');
-var bufferToArrayBuffer = require('buffer-to-arraybuffer');
+//var blobUtil = require('blob-util');
+//var bufferToArrayBuffer = require('buffer-to-arraybuffer');
 
 // E-MAIL RETRIEVING - registering a charity
 router.post('/inbound-mail', function (req, res) {
