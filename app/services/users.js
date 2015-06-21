@@ -66,6 +66,8 @@ var Users = {
         lvl: 1
       };
 
+      console.log(update);
+
       return Q.ninvoke(users, 'findAndModify', {
         query: {
           email: email
