@@ -41,7 +41,8 @@ module.exports = {
           $inc: {
             points: points
           }
-        }
+        },
+        new: true
     }).then(function (charity) {
       pusher.updateCharity(charity[0]);
       return charity[0];
@@ -58,7 +59,8 @@ module.exports = {
             funds: paymentValue,
             points: paymentValue * 1000
           }
-        }
+        },
+        new: true
     }).then(function (charity) {
       pusher.updateCharity(charity[0]);
       return charity[0];
