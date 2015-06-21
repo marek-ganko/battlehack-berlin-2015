@@ -18,7 +18,7 @@ router.put('/:email', function (req, res) {
     return getDistanceFromLatLonInM(c1.latitude, c1.longitude, c2.latitude, c2.longitude);
   };
 
-  charities.getCharities().then(function (charities) {
+  charities2.getCharities().then(function (charities) {
     charities.filter(function (charity) {
       var d = distance(charity.coordinates, newCoords);
       console.log('Distance', d);
