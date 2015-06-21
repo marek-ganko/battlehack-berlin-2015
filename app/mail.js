@@ -15,9 +15,6 @@ router.post('/inbound-mail', function (req, res) {
   }).then(function () {
     console.log("Success");
     res.sendStatus(200);
-  }, function (error) {
-    console.log("Error" + JSON.stringify(error));
-    res.sendStatus(500);
   }).done();
 });
 

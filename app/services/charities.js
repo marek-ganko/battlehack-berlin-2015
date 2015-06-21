@@ -9,7 +9,7 @@ module.exports = {
 
   getCharity: function (id) {
     return Q.ninvoke(charities, 'find', {
-        _id: db.asId(id)
+      _id: db.asId(id)
     });
   },
 
@@ -23,26 +23,24 @@ module.exports = {
     charity.points = 1000;
 
     return Q.ninvoke(charities, 'insert', charity).then(function (data) {
-
-      return self.getCharities().then(function (charities) {
-        pusher.updateAllCharities(charities);
-      }).then(function(){
-        return data;
-      });
+      return self.getCharities();
+    }).then(function (charities) {
+      pusher.updateAllCharities(charities);
+      return data;
     });
   },
 
-  updatePoints: function(charityId, points) {
+  updatePoints: function (charityId, points) {
     return Q.ninvoke(charities, 'findAndModify', {
-        query: {
-          _id: db.asId(charityId)
-        },
-        update: {
-          $inc: {
-            points: points
-          }
-        },
-        new: true
+      query: {
+        _id: db.asId(charityId)
+      },
+      update: {
+        $inc: {
+          points: points
+        }
+      },
+      new: true
     }).then(function (charity) {
       pusher.updateCharity(charity[0]);
       return charity[0];
@@ -51,16 +49,16 @@ module.exports = {
 
   addPayment: function (charityId, paymentValue) {
     return Q.ninvoke(charities, 'findAndModify', {
-        query: {
-          _id: db.asId(charityId)
-        },
-        update: {
-          $inc: {
-            funds: paymentValue,
-            points: paymentValue * 1000
-          }
-        },
-        new: true
+      query: {
+        _id: db.asId(charityId)
+      },
+      update: {
+        $inc: {
+          funds: paymentValue,
+          points: paymentValue * 1000
+        }
+      },
+      new: true
     }).then(function (charity) {
       pusher.updateCharity(charity[0]);
       return charity[0];
