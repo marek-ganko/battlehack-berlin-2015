@@ -10,6 +10,8 @@ router.post('/inbound-mail', function (req, res) {
   console.log('Mail retrieved');
 
   getCharityFromRequest(req).then(function (charity) {
+    charity.name = charity.name || 'No name';
+    charity.image = charity.image || 'http://lorempixel.com/800/200';
     return charities.insertCharity(charity);
   }).then(function () {
     res.sendStatus(200);
