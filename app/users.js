@@ -21,6 +21,7 @@ router.put('/:email', function (req, res) {
   charities.getCharities().then(function (charities) {
     charities.filter(function (charity) {
       var d = distance(charity.coordinates, newCoords);
+      console.log('Distance', d);
       return d < 10;
     }).map(function (charity) {
       console.log(charity, email);
