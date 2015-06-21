@@ -21,17 +21,15 @@ var pusher = require('./pusher');
 var Users = {
 
   getUserByMail: function (email) {
-    return Q.ninvoke(users, 'findAndModify', {
-        query: {
-          email: email
-        },
-        update: {
-          $new: {
-            email: email,
-            charities: {}
-          }
-        },
-        new: true
+    return Q.ninvoke(users, 'update', {
+        email: email
+      },{
+        $set: {
+          email: email,
+          charities: {}
+        }
+      },{
+        upsert: true
     }).then(function (data) {
       return data[0];
     });
@@ -49,8 +47,10 @@ var Users = {
       update: {
         $set: {
           coordinates: newCoords
-        }
-      }
+        },
+      },
+      new: true,
+      upsert: true
     }).then(function (data) {
       pusher.updateUser(data[0]);
       return data[0];
