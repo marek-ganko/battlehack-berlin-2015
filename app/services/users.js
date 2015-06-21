@@ -52,8 +52,7 @@ var Users = {
 
   updateCharityPoints: function (email, charityId, points) {
     return this.getUserByMail(email).done(function (user) {
-     
-      var c = user.charities || {};
+      var c = user? user.charities : {} || {};
       c = c[charityId] || {
         points: 0,
         lvl: 1
