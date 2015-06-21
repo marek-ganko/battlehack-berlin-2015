@@ -58,21 +58,27 @@ var Users = {
   },
 
   updateCharityPoints: function (email, charityId, points) {
-    var update = {};
-    update['charities.' + charityId] = points;
 
-    return Q.ninvoke(users, 'findAndModify', {
-      query: {
-        email: email
-      },
-      update: {
-        $inc: update
-      },
-      new: true,
-      upsert: true
-    }).then(function (data) {
-      pusher.updateUser(data[0]);
-      return data[0];
+    return this.getUserByMail(email).then(function (user) {
+      var update = {};
+      update['charities.' + charityId] = {
+        points: points,
+        lvl: 1
+      };
+
+      return Q.ninvoke(users, 'findAndModify', {
+        query: {
+          email: email
+        },
+        update: {
+          $set: update
+        },
+        new: true,
+        upsert: true
+      }).then(function (data) {
+        pusher.updateUser(data[0]);
+        return data[0];
+      });
     });
   }
 
