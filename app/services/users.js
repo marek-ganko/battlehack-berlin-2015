@@ -67,7 +67,9 @@ var Users = {
       },
       update: {
         $inc: update
-      }
+      },
+      new: true,
+      upsert: true
     }).then(function (data) {
       pusher.updateUser(data[0]);
       return data[0];
