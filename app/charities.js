@@ -3,7 +3,7 @@ var router = require('express').Router();
 var charities = require('./services/charities');
 var braintree = require('./services/braintree');
 
-router.get('/', function (req, res) {
+router.get('/api/charities', function (req, res) {
   charities.getCharities().done(function (data) {
     data.forEach(function (item) {
       item.coordinates = {
