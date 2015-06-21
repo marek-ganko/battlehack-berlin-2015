@@ -3,6 +3,7 @@ var charities = require('./services/charities');
 var Busboy = require('busboy');
 var ExifImage = require('exif').ExifImage;
 var Q = require('q');
+var cloudinary = require('./cloudinary');
 
 // E-MAIL RETRIEVING - registering a charity
 router.post('/inbound-mail', function (req, res) {
@@ -23,23 +24,27 @@ function getCharityFromRequest (req) {
   var busboy = new Busboy({headers: req.headers});
 
   var fileParsingPromise;
-
-  var fileCount = 0;
   busboy.on('file', function (fieldname, fileStream, filename, encoding, mimetype) {
-    if (fileCount > 0) {  // support only the first file in the attachment
+    if ((fileParsingPromise) && !isValidImageMimeType(mimetype)) {  // support only the first file in the attachment
       fileStream.resume();
     }
-    fileCount = +1;
     var fileParsinDeferred = Q.defer();
     fileParsingPromise = fileParsinDeferred.promise;
-    getBufferFromFileStream(fileStream)
-      .then(getCoordinatesFromBuffer)
+
+    getCoordinatesFromStream(fileStream)
       .then(function (coordinates) {
         if (coordinates) {
           charity.coordinates = coordinates;
         }
+
+        var streamUpload = cloudinary.uploadStream();
+        fileStream.pipe(streamUpload.stream);
+        return streamUpload.promise;
+      })
+      .then(function(imageData){
+        charity.image = imageData;
         fileParsinDeferred.resolve();
-      });
+      })
   });
   busboy.on('field', function (fieldname, val) {
     insertFieldToChartIfPossible(fieldname, val, charity);
@@ -57,6 +62,15 @@ function getCharityFromRequest (req) {
   req.pipe(busboy);
 
   return deferred.promise;
+}
+
+function getCoordinatesFromStream (fileStream) {
+  return getBufferFromFileStream(fileStream)
+    .then(getCoordinatesFromBuffer);
+}
+
+function isValidImageMimeType (mimeType) {
+  return mimeType.split('/')[0].toLowerCase() === 'image';
 }
 
 function getBufferFromFileStream (fileStream) {
@@ -93,7 +107,8 @@ function convertGpsValue (gpsValue) {
 
 function getCoordinatesFromBuffer (buffer) {
   var deferred = Q.defer();
-  ExifImage({image: buffer}, function (error, exifData) {
+  /*jshint nonew: false */
+  (new ExifImage({image: buffer}, function (error, exifData) {
     if (error) {
       deferred.reject(coordinates);
     }
@@ -105,7 +120,7 @@ function getCoordinatesFromBuffer (buffer) {
       };
     }
     deferred.resolve(coordinates);
-  });
+  }));
 
   return deferred.promise;
 }

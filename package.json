@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon app",
-    "test": "semistandard"
+    "start": "nodemon app"
   },
   "repository": {
     "type": "git",
@@ -21,6 +20,7 @@
     "body-parser": "^1.13.1",
     "braintree": "^1.26.0",
     "busboy": "^0.2.9",
+    "cloudinary": "^1.2.1",
     "exif": "^0.4.0",
     "express": "^4.12.4",
     "jade": "^1.11.0",
