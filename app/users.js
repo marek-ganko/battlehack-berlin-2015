@@ -28,9 +28,9 @@ router.put('/:email', function (req, res) {
       charities.updatePoints(charity._id, 5);
       users.updateCharityPoints(email, charity._id, 5);
     });
-  });
 
-  users.updatePosition(email, newCoords).done(function () {
+    return users.updatePosition(email, newCoords);
+  }).done(function () {
     res.sendStatus(200);
   });
 });
