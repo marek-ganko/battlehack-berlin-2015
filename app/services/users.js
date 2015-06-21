@@ -53,7 +53,6 @@ var Users = {
   updateCharityPoints: function (email, charityId, points) {
     return this.getUserByMail(email).done(function (user) {
      
-      console.log(user); 
       var c = user.charities || {};
       c = c[charityId] || {
         points: 0,
@@ -65,8 +64,6 @@ var Users = {
         points: c.points + points,
         lvl: c.lvl
       };
-
-      console.log(update);
 
       return Q.ninvoke(users, 'findAndModify', {
         query: {
