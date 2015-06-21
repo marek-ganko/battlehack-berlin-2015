@@ -8,7 +8,7 @@ router.get('/', function (req, res) {
     data.forEach(function (item) {
       item.coordinates = {
         latitude: 52.51666666666667 + (Math.random() - 0.5),
-        longitue: 13.4 + (Math.random() - 0.5)
+        longitude: 13.4 + (Math.random() - 0.5)
       };
     });
     res.send(data);
