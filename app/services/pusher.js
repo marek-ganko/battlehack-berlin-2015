@@ -8,6 +8,8 @@ pusher.domain = 'api-eu.pusher.com';
 module.exports = {
 
   updateCharity: function (charity) {
+    delete charity.image;
+    delete charity.thumb;
     pusher.trigger('charity', 'update', charity);
   },
 
