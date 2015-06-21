@@ -1,22 +1,18 @@
 var router = require('express').Router();
 
 var charities = require('./services/charities');
+var users = require('./services/users');
 var braintree = require('./services/braintree');
 
 router.get('/', function (req, res) {
   charities.getCharities().done(function (data) {
-    data.forEach(function (item) {
-      item.coordinates = {
-        latitude: 52.51666666666667 + (Math.random() - 0.5),
-        longitue: 13.4 + (Math.random() - 0.5)
-      };
-    });
     res.send(data);
   });
 });
 
 router.post('/:id/payment', function (req, res) {
   var nonce = req.body.payment_method_nonce;
+  var userEmail = req.body.email;
   var id = req.params.id;
   var paymentValue = 1;
 
@@ -30,6 +26,10 @@ router.post('/:id/payment', function (req, res) {
     return braintree.createPayment(paymentValue, nonce);
 
   }).then(function (paymentResult) {
+
+    if (userEmail) {
+      users.updateCharityPoints(userEmail, id, 1000);
+    }
 
     return charities.addPayment(id, paymentValue);
 

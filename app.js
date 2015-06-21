@@ -16,6 +16,7 @@ app.use(bodyParser.json());
 app.use(require('./app/mail'));
 app.use(require('./app/payment'));
 app.use('/api/charities', require('./app/charities'));
+app.use('/api/users', require('./app/users'));
 
 var server = app.listen(process.env.PORT || 3000, function () {
 

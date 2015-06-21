@@ -9,6 +9,18 @@ module.exports = {
 
   updateCharity: function (charity) {
     pusher.trigger('charity', 'update', charity);
+  },
+
+  updateAllCharities: function (charities) {
+    pusher.trigger('charity', 'new', charities);
+  },
+
+  updateUser: function (user) {
+    pusher.trigger('users', 'update', user);
+  },
+
+  updateAllUsers: function (users) {
+    pusher.trigger('users', 'new', users);
   }
 
 };
