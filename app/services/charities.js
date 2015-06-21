@@ -25,8 +25,7 @@ module.exports = {
     return Q.ninvoke(charities, 'insert', charity).then(function (data) {
       return self.getCharities();
     }).then(function (charities) {
-      pusher.updateAllCharities(charities);
-      return data;
+      pusher.updateAllCharities();
     });
   },
 

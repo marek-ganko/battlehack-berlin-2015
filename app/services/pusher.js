@@ -11,8 +11,8 @@ module.exports = {
     pusher.trigger('charity', 'update', charity);
   },
 
-  updateAllCharities: function (charities) {
-    pusher.trigger('charity', 'new', charities);
+  updateAllCharities: function () {
+    pusher.trigger('charity', 'new', {isOkay:true});
   },
 
   updateUser: function (user) {
