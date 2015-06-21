@@ -24,11 +24,11 @@ module.exports = {
 
     return Q.ninvoke(charities, 'insert', charity).then(function (data) {
 
-      self.getCharities().then(function (charities) {
+      return self.getCharities().then(function (charities) {
         pusher.updateAllCharities(charities);
+      }).then(function(){
+        return data;
       });
-
-      return data;
     });
   },
 
